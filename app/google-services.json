@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "39258928851",
+    "project_id": "aplikasi-cabai",
+    "storage_bucket": "aplikasi-cabai.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:39258928851:android:febb971412b83e4d1f4626",
+        "android_client_info": {
+          "package_name": "com.example.aplikasicabai"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "39258928851-bf04eaci9vfej778vnod7fit8oam54od.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.aplikasicabai",
+            "certificate_hash": "874728e2f92e8534253151df3f20bbaf5ac2198e"
+          }
+        },
+        {
+          "client_id": "39258928851-a7p6tursopq5k8khfkjij0l1hklf3oc8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB8jWGUg6wv6XXbfQTQUJ2Tpxs3-FRJpSE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "39258928851-a7p6tursopq5k8khfkjij0l1hklf3oc8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

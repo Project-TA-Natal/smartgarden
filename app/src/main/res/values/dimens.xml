@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="ts_48">48sp</dimen>
+    <dimen name="ts_40">40sp</dimen>
+    <dimen name="ts_35">35sp</dimen>
+    <dimen name="dp_30">30dp</dimen>
+    <dimen name="dp_180">180dp</dimen>
+    <dimen name="dp_200">200dp</dimen>
+    <dimen name="dp_250">250dp</dimen>
+    <dimen name="ts_30">30sp</dimen>
+    <dimen name="dp_20">20dp</dimen>
+    <dimen name="ts_20">20sp</dimen>
+    <dimen name="ts_14">14sp</dimen>
+    <dimen name="ts_12">12sp</dimen>
+</resources>

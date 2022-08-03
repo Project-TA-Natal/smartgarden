@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_home">
+
+    <fragment
+        android:id="@+id/navigation_home"
+        android:name="com.example.aplikasicabai.fragments.HomeFragment"
+        android:label="@string/menu_home"
+        tools:layout="@layout/fragment_home"/>
+
+    <fragment
+        android:id="@+id/navigation_settings"
+        android:name="com.example.aplikasicabai.fragments.DetailFragment"
+        android:label="@string/menu_setting"
+        tools:layout="@layout/fragment_detail"/>
+
+    <fragment
+        android:id="@+id/navigation_notifications"
+        android:name="com.example.aplikasicabai.fragments.NotificationFragment"
+        android:label="@string/menu_notification"
+        tools:layout="@layout/fragment_notification"/>
+
+    <fragment
+        android:id="@+id/navigation_stats"
+        android:name="com.example.aplikasicabai.fragments.StatisticFragment"
+        android:label="@string/menu_statistic"
+        tools:layout="@layout/fragment_statistic"/>
+
+</navigation>

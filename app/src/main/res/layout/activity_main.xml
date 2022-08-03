@@ -4,31 +4,55 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
-    tools:menu="@menu/bottom_navigation">
+    tools:context=".MainActivity">
 
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/fragmentContainer"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+<!--    <androidx.fragment.app.FragmentContainerView-->
+<!--        android:id="@+id/fragmentContainer"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"/>-->
+
+<!--    <com.google.android.material.bottomnavigation.BottomNavigationView-->
+<!--        android:id="@+id/bottom_navigation"-->
+<!--        app:menu="@menu/bottom_navigation"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintLeft_toLeftOf="parent"-->
+<!--        app:layout_constraintRight_toRightOf="parent"-->
+<!--        android:background="@color/white"-->
+<!--        app:itemIconTint="@color/green_color"-->
+<!--        app:itemTextColor="@color/black"/>-->
+<!--    <FrameLayout-->
+<!--        android:id="@+id/fragment_container"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="0dp"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:layout_constraintBottom_toTopOf="@id/bottom_navigation"/>-->
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottom_navigation"
-        app:menu="@menu/bottom_navigation"
+        android:id="@+id/navigation_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:background="@color/white"
-        app:itemIconTint="@color/green_color"
-        app:itemTextColor="@color/black"/>
-    <FrameLayout
-        android:id="@+id/fragment_container"
+        app:menu="@menu/bottom_nav_menu"
+        android:layout_marginStart="0dp"
+        android:layout_marginEnd="0dp"
+        app:itemIconTint="@color/bottom_navigation_colored"
+        app:itemTextColor="@color/bottom_navigation_colored"
+        app:labelVisibilityMode="labeled"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <fragment
+        android:id="@+id/nav_host_fragment"
+        android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        app:defaultNavHost="true"
+        app:layout_constraintBottom_toTopOf="@+id/navigation_view"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/bottom_navigation"/>
-
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:navGraph="@navigation/mobile_navigation"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

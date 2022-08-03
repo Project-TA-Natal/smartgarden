@@ -33,6 +33,28 @@
         <entry key="..\:/Users/Acer/AndroidStudioProjects/AplikasiCabai/app/src/main/res/layout/notif.xml" value="0.19895833333333332" />
         <entry key="..\:/Users/Acer/AndroidStudioProjects/AplikasiCabai/app/src/main/res/layout/notification.xml" value="0.2" />
         <entry key="..\:/Users/Acer/AndroidStudioProjects/AplikasiCabai/app/src/main/res/menu/bottom_navigation.xml" value="0.25" />
+        <entry key="app/src/main/res/drawable/ic_outline_lock.xml" value="0.319" />
+        <entry key="app/src/main/res/drawable/ic_outline_person.xml" value="0.319" />
+        <entry key="app/src/main/res/drawable/ic_round_home.xml" value="0.23" />
+        <entry key="app/src/main/res/drawable/ic_statistic.xml" value="0.23" />
+        <entry key="app/src/main/res/layout/activity_login.xml" value="0.20648193359374978" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/activity_notification.xml" value="0.3578125" />
+        <entry key="app/src/main/res/layout/activity_register.xml" value="0.28538665771484373" />
+        <entry key="app/src/main/res/layout/activity_splashscreen.xml" value="0.36895751953125" />
+        <entry key="app/src/main/res/layout/card_layout.xml" value="0.3578125" />
+        <entry key="app/src/main/res/layout/fragment_detail.xml" value="0.3578125" />
+        <entry key="app/src/main/res/layout/fragment_histori.xml" value="0.3578125" />
+        <entry key="app/src/main/res/layout/fragment_home.xml" value="0.3849365234375" />
+        <entry key="app/src/main/res/layout/fragment_notification.xml" value="0.18135764944275581" />
+        <entry key="app/src/main/res/layout/fragment_notifikasi.xml" value="0.3578125" />
+        <entry key="app/src/main/res/layout/fragment_pengaturan.xml" value="0.3578125" />
+        <entry key="app/src/main/res/layout/fragment_setting.xml" value="0.3578125" />
+        <entry key="app/src/main/res/layout/fragment_statistic.xml" value="0.299468994140625" />
+        <entry key="app/src/main/res/layout/item_dropdown.xml" value="0.33258412679036464" />
+        <entry key="app/src/main/res/layout/item_notification.xml" value="0.3567708333333333" />
+        <entry key="app/src/main/res/menu/bottom_nav_menu.xml" value="0.3567708333333333" />
+        <entry key="app/src/main/res/menu/bottom_navigation.xml" value="0.3578125" />
       </map>
     </option>
   </component>

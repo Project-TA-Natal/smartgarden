@@ -9,18 +9,16 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp">
+        android:padding="20dp">
 
         <ImageView
             android:id="@+id/gambar_login"
-            android:layout_width="320dp"
-            android:layout_height="246dp"
-            android:layout_marginTop="100dp"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:layout_marginTop="50dp"
             android:contentDescription="@string/deskripsi_bg_login"
             android:src="@drawable/ic_bg_login"
-            app:layout_constraintBottom_toTopOf="@+id/edt_login_email"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -31,12 +29,16 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_30"
             android:hint="@string/email"
-            app:layout_constraintBottom_toTopOf="@+id/edt_login_pass"
+            app:errorEnabled="true"
+            app:hintTextColor="@android:color/black"
+            app:boxStrokeColor="@color/green_color"
+            app:startIconDrawable="@drawable/ic_outline_person"
             app:layout_constraintTop_toBottomOf="@+id/gambar_login"
-            app:startIconDrawable="@drawable/ic_person"
-            tools:layout_editor_absoluteX="15dp">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/poppins"
@@ -44,43 +46,28 @@
                 tools:ignore="TextContrastCheck" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <TextView
-            android:id="@+id/tv_Register"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="128dp"
-            android:fontFamily="@font/poppins_semi_bold"
-            android:padding="10dp"
-            android:text="@string/Register"
-            android:textColor="@color/green_color"
-            app:layout_constraintBottom_toBottomOf="@+id/tv_new_user"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/tv_new_user"
-            app:layout_constraintVertical_bias="0.0" />
-
-        <TextView
-            android:id="@+id/tv_new_user"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="4dp"
-            android:fontFamily="@font/poppins"
-            android:gravity="center"
-            android:padding="10dp"
-            android:text="@string/new_user"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/tv_Register"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="parent" />
-
-        <CheckBox
-            android:id="@+id/checkbox_login"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/edt_login_pass"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/poppins"
-            android:text="@string/checkbox"
-            app:layout_constraintBottom_toTopOf="@+id/btn_login"
-            app:layout_constraintTop_toBottomOf="@+id/edt_login_pass"
-            tools:layout_editor_absoluteX="15dp" />
+            android:layout_marginTop="16dp"
+            android:hint="@string/password"
+            app:errorEnabled="true"
+            app:hintTextColor="@android:color/black"
+            app:boxStrokeColor="@color/green_color"
+            app:endIconMode="password_toggle"
+            app:layout_constraintTop_toBottomOf="@+id/edt_login_email"
+            app:startIconDrawable="@drawable/ic_outline_lock">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins"
+                android:inputType="textPassword"
+                tools:ignore="TextContrastCheck" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <Button
             android:id="@+id/btn_login"
@@ -91,30 +78,39 @@
             android:backgroundTint="@color/green_color"
             android:fontFamily="@font/poppins_semi_bold"
             android:text="@string/Login"
-            app:layout_constraintBottom_toTopOf="@+id/tv_Register"
-            app:layout_constraintTop_toBottomOf="@+id/checkbox_login"
+            app:layout_constraintTop_toBottomOf="@+id/edt_login_pass"
             tools:layout_editor_absoluteX="15dp" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/edt_login_pass"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:hint="@string/password"
-            app:layout_constraintBottom_toTopOf="@+id/checkbox_login"
-            app:layout_constraintTop_toBottomOf="@+id/edt_login_email"
-            app:startIconDrawable="@drawable/ic_baseline_lock_24"
-            tools:layout_editor_absoluteX="15dp">
 
-            <com.google.android.material.textfield.TextInputEditText
+        <LinearLayout
+            android:id="@+id/ll_register"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginTop="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btn_login">
+
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="5dp"
                 android:fontFamily="@font/poppins"
-                android:inputType="textPassword"
-                tools:ignore="TextContrastCheck" />
-        </com.google.android.material.textfield.TextInputLayout>
+                android:text="@string/new_user"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/tv_new_user"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="5dp"
+                android:fontFamily="@font/poppins_semi_bold"
+                android:text="@string/register"
+                android:textColor="@color/green_color"
+                android:textSize="14sp" />
+        </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-
 </ScrollView>

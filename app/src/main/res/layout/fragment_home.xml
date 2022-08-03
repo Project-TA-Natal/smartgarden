@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="5dp">
+        android:padding="16dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -103,7 +103,7 @@
                         />
 
                     <TextView
-                        android:id="@+id/kelembapan"
+                        android:id="@+id/tv_kelembapan"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textColor="@color/white"
@@ -144,7 +144,7 @@
                         android:src="@drawable/ic_suhu"/>
 
                     <TextView
-                        android:id="@+id/suhu"
+                        android:id="@+id/tv_suhu"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/poppins_semi_bold"
@@ -183,7 +183,7 @@
                         android:src="@drawable/ph"/>
 
                     <TextView
-                        android:id="@+id/ph"
+                        android:id="@+id/tv_ph"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textColor="@color/white"
@@ -231,7 +231,7 @@
                         android:src="@drawable/ic_water" />
 
                     <TextView
-                        android:id="@+id/pompaair"
+                        android:id="@+id/tv_pompa_air"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textColor="@color/white"
@@ -272,7 +272,7 @@
                         android:src="@drawable/ic_kipas"/>
 
                     <TextView
-                        android:id="@+id/kipas"
+                        android:id="@+id/tv_kipas_angin"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/poppins_semi_bold"
@@ -312,7 +312,7 @@
                         android:src="@drawable/ic_nutri"/>
 
                     <TextView
-                        android:id="@+id/penetralph"
+                        android:id="@+id/tv_penetral_ph"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textColor="@color/white"
@@ -353,7 +353,7 @@
                         android:fontFamily="@font/poppins_semi_bold"
                         android:text="@string/title_tanaman_cabai"
                         android:textColor="@color/white"
-                        android:padding="5dp"
+                        android:padding="10dp"
                         android:textSize="@dimen/ts_20" />
 
                     <androidx.cardview.widget.CardView
@@ -369,8 +369,8 @@
                             android:fontFamily="@font/poppins"
                             android:padding="15dp"
                             android:text="@string/manfaat_cabai"
-                            android:textColor="#990C0B0B"
-                            android:textSize="@dimen/ts_14" />
+                            android:textColor="@android:color/black"
+                            android:textSize="16sp" />
 
                     </androidx.cardview.widget.CardView>
                 </LinearLayout>

@@ -1,21 +1,33 @@
 package com.example.aplikasicabai
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 
+@SuppressLint("CustomSplashScreen")
 class SplashscreenActivity : AppCompatActivity() {
-    private val waktu_loading = 4000
-    //4000=4 detik
+    private val sharedPreferences: SharedPreferences by lazy {
+        getSharedPreferences("user", Context.MODE_PRIVATE)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splashscreen)
-        Handler().postDelayed({//Setelah loading maka akan langsung berpindah ke halaman login// }
-            val Login= Intent(this@SplashscreenActivity, LoginActivity::class.java)
-            startActivity(Login)
+        Handler().postDelayed({
+            val sharedEmailValue = sharedPreferences.getString("email_key", "default_email")
+            println("ini sharedEmailValue $sharedEmailValue")
+            if (sharedEmailValue.equals("default_email")) {
+                val loginIntent= Intent(this, LoginActivity::class.java)
+                startActivity(loginIntent)
+            } else {
+                val mainIntent = Intent(this, MainActivity::class.java)
+                startActivity(mainIntent)
+            }
             finish()
-        }, waktu_loading.toLong())
+        }, 4000)
     }
-    }
+}

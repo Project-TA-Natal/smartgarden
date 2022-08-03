@@ -4,13 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".RegisterActivity">
+    tools:context=".RegisterActivity"
+    android:padding="20dp">
 
     <ImageView
         android:id="@+id/gambar_register"
-        android:layout_width="320dp"
-        android:layout_height="246dp"
-        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:layout_marginTop="16dp"
         android:contentDescription="@string/deskripsi_register"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -25,11 +26,15 @@
         android:layout_marginEnd="15dp"
         android:layout_marginStart="15dp"
         android:hint="@string/email"
-        app:startIconDrawable="@drawable/ic_person"
+        app:errorEnabled="true"
+        app:hintTextColor="@android:color/black"
+        app:boxStrokeColor="@color/green_color"
+        app:startIconDrawable="@drawable/ic_outline_person"
         app:layout_constraintTop_toBottomOf="@id/gambar_register"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/et_username_register"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/poppins"/>
@@ -42,11 +47,16 @@
         android:layout_marginEnd="15dp"
         android:layout_marginStart="15dp"
         android:hint="@string/password"
-        app:startIconDrawable="@drawable/ic_baseline_lock_24"
+        app:errorEnabled="true"
+        app:hintTextColor="@android:color/black"
+        app:boxStrokeColor="@color/green_color"
+        app:endIconMode="password_toggle"
+        app:startIconDrawable="@drawable/ic_outline_lock"
         app:layout_constraintTop_toBottomOf="@id/edt_registrasi_email"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/et_password_register"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/poppins"/>
@@ -59,66 +69,60 @@
         android:layout_marginEnd="15dp"
         android:layout_marginStart="15dp"
         android:hint="@string/konfirmasi_password"
-        app:startIconDrawable="@drawable/ic_baseline_lock_24"
+        app:errorEnabled="true"
+        app:hintTextColor="@android:color/black"
+        app:boxStrokeColor="@color/green_color"
+        app:endIconMode="password_toggle"
+        app:startIconDrawable="@drawable/ic_outline_lock"
         app:layout_constraintTop_toBottomOf="@id/edt_registrasi_password"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/et_confirm_password_register"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/poppins"/>
     </com.google.android.material.textfield.TextInputLayout>
 
-    <CheckBox
-        android:id="@+id/checkbox_registrasi"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/checkbox"
-        android:layout_marginTop="5dp"
-        android:layout_marginStart="15dp"
-        android:layout_marginEnd="15dp"
-        android:fontFamily="@font/poppins"
-        app:layout_constraintTop_toBottomOf="@id/edt_registrasi_repass"/>
-
     <Button
         android:id="@+id/btn_registrasi"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/Register"
+        android:text="@string/register"
         android:fontFamily="@font/poppins_semi_bold"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="20dp"
         android:layout_marginStart="15dp"
         android:layout_marginEnd="15dp"
         android:backgroundTint="@color/green_color"
-        app:layout_constraintTop_toBottomOf="@id/checkbox_registrasi"/>
+        app:layout_constraintTop_toBottomOf="@id/edt_registrasi_repass"/>
 
-    <TextView
-        android:id="@+id/tv_new_user"
+    <LinearLayout
+        android:id="@+id/ll_register"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="120dp"
-        android:layout_marginTop="20dp"
-        android:fontFamily="@font/poppins"
+        android:orientation="horizontal"
         android:gravity="center"
-        android:padding="10dp"
-        android:text="@string/have_account"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btn_registrasi"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <TextView
-        android:id="@+id/tv_Login"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="104dp"
-        android:fontFamily="@font/poppins_semi_bold"
-        android:padding="10dp"
-        android:text="@string/Login"
-        android:textColor="@color/green_color"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/tv_new_user"
-        app:layout_constraintTop_toBottomOf="@id/btn_registrasi" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btn_registrasi">
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:fontFamily="@font/poppins"
+            android:text="@string/have_account"
+            android:textSize="14sp"/>
+
+        <TextView
+            android:id="@+id/tv_btn_login"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="5dp"
+            android:fontFamily="@font/poppins_semi_bold"
+            android:text="@string/Login"
+            android:textColor="@color/green_color"
+            android:textSize="14sp" />
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

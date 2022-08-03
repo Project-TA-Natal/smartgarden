@@ -1,12 +1,11 @@
 buildscript {
     repositories {
-        google()  // Google's Maven repository
-
+        google()
+        mavenCentral()// Google's Maven repository
+        maven { url 'https://jitpack.io' }
     }
     dependencies {
-
         classpath 'com.google.gms:google-services:4.3.13'
-
     }
 }
 plugins {

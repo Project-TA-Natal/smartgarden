@@ -15,7 +15,7 @@
     <string name="email">Email</string>
     <string name="edt_login_pass">edt_login_pass</string>
     <string name="password">Password</string>
-    <string name="Register">Register</string>
+    <string name="register">Register</string>
     <string name="checkbox_login">checkbox_login</string>
     <string name="checkbox_register">checkbox_register</string>
     <string name="checkbox">Remember Password</string>
@@ -36,7 +36,6 @@
     <string name="menu_statistic">History</string>
     <string name="menu_notification">Notifikasi</string>
     <string name="menu_setting">Setting</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="text_home">Welcome To Smart Garden</string>
     <string name="description_home">Icon dashboard</string>
@@ -49,12 +48,13 @@
     <string name="dc_suhu">Icon sensor suhu</string>
     <string name="nilai_ph">6.0</string>
     <string name="dc_ph">Icon sensor ph tanah</string>
-    <string name="val_email">Email Harus Diisi</string>
+    <string name="val_email">Format Email Salah</string>
     <string name="val_password">Password Minimal 6 Karakter</string>
     <string name="harus_diisi">Email Harus Diisi</string>
     <string name="val_email_regis">Email Harus Diisi</string>
     <string name="val_regis">Email Harus Diisi</string>
     <string name="val_pass_regis">Password Harus Diisi</string>
+    <string name="val_repass_regis">Konfirmasi Password Harus Diisi</string>
     <string name="val_pass">Password Minimal 6 Karakter</string>
     <string name="succes_regis">Register Berhasil</string>
     <string name="status">ON</string>
@@ -91,6 +91,17 @@
     <string name="manfaat_cabai">Cabai dapat digunakan untuk mempercepat metabolisme tubuh, membantu fungsi jantung, membantu pertumbuhan rambut, meredakan rasa nyeri, menurunkan berat badan, melegakan sakit tenggorokan, mengatasi darah tinggi, menyembuhkan infeksi, dan mencegah kanker.</string>
     <string name="title_notif">Smart Garden</string>
     <string name="notifikasi">Notifikasi</string>
-
-
+    <string name="history">History</string>
+    <string name="logout">Logout</string>
+    <string name="cari_data">Cari Data</string>
+    <string name="configuration_setting">Jenis Konfigurasi</string>
+    <string name="choose_date_picker">Pilih Tanggal</string>
+    <string name="date_sample">01 Agustus 2022</string>
+    <string name="sample_message_notification">Nutrisi pada tanaman anda dibawah batas normal</string>
+    <string name="new_notification">New</string>
+    <string-array name="lable_stats">
+        <item>Suhu Ruang</item>
+        <item>Kelembaban Tanah</item>
+        <item>pH Tanah</item>
+    </string-array>
 </resources>

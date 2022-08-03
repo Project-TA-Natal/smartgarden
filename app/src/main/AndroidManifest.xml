@@ -3,6 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.aplikasicabai">
 
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -14,16 +17,12 @@
         android:theme="@style/Theme.AplikasiCabai"
         tools:targetApi="31">
         <activity
-            android:name=".notification"
+            android:name=".Notification"
             android:exported="false" />
 
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/bg_home" />
-        <!--
- Set color used with incoming notification messages. This is used when no color is set for the incoming
-             notification message. See README(https://goo.gl/6BKBk7) for more.
-        -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/purple_700" />
@@ -45,7 +44,7 @@
         </activity>
         <activity
             android:name=".MainActivity"
-            android:exported="false"></activity>
+            android:exported="false" />
 
         <service
             android:name=".MyFirebaseMessagingService"

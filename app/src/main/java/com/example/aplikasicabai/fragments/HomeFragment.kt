@@ -1,6 +1,10 @@
 package com.example.aplikasicabai.fragments
 
 import android.annotation.SuppressLint
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -8,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.app.NotificationCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.aplikasicabai.R
 import com.example.aplikasicabai.RecyclerAdapter
@@ -24,6 +29,11 @@ import java.util.*
 class HomeFragment : Fragment() {
 
     private var homeBinding: FragmentHomeBinding? = null
+    companion object {
+        private const val NOTIFICATION_ID = 1
+        private const val CHANNEL_ID = "channel_01"
+        private const val CHANNEL_NAME = "smart garden channel"
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,7 +46,7 @@ class HomeFragment : Fragment() {
 
     private fun getDataFirebase() {
         val database = FirebaseDatabase.getInstance().reference
-//        database.child("notifications").removeValue()
+        // database.child("notifications").removeValue()
         val notificationReference = FirebaseDatabase.getInstance().getReference("notifications")
         val databaseListener = object : ValueEventListener {
             @SuppressLint("SimpleDateFormat")
@@ -83,61 +93,109 @@ class HomeFragment : Fragment() {
                 //    MonitoringConfig(soilMoistureLowerLimit, soilMoistureUpperLimit, temperatureLowerLimit, temperatureUpperLimit, soilPhLowerLimit, soilPhUpperLimit, soilPhMinimumLimit, soilPhMaximumLimit),
                 //    notificationId
                 //)
-
-                if (kelembapanValue > soilMoistureUpperLimit) {
+                println("INI kelembapanValue $kelembapanValue")
+                println("INI soilMoistureUpperLimit $soilMoistureUpperLimit")
+                if (kelembapanValue.toFloat() > soilMoistureUpperLimit.toFloat()) {
                     println("NOTIFIKASI 1")
-                    val notification = Notification(notificationID, "Kelembapan Tanah berada diatas ambang batas", currentDate, false)
+                    val message = "Kelembapan Tanah berada diatas ambang batas"
+                    val notification = Notification(notificationID, message, currentDate, false)
                     // DI KOMEN SOALNYA DI CREATE TEREUS NOTIFNYA
-                    // notificationReference.child(notificationID).setValue(notification)
+                    notificationReference.child(notificationID).setValue(notification)
+                    sendNotification(message)
+
                 }
-                if (kelembapanValue < soilMoistureLowerLimit) {
+                if (kelembapanValue.toFloat() < soilMoistureLowerLimit.toFloat()) {
                     println("NOTIFIKASI 2")
-                    val notification = Notification(notificationID, "Kelembapan Tanah berada dibawah ambang batas", currentDate, false)
+                    val message = "Kelembapan Tanah berada dibawah ambang batas"
+                    val notification = Notification(notificationID, message, currentDate, false)
+                    // DI KOMEN SOALNYA DI CREATE TEREUS NOTIFNYA
+                    notificationReference.child(notificationID).setValue(notification)
+                    sendNotification(message)
                 }
-                if (suhuValue > temperatureUpperLimit) {
+                if (suhuValue.toFloat() > temperatureUpperLimit.toFloat()) {
                     println("NOTIFIKASI 3")
-                    val notification = Notification(notificationID, "Suhu berada diatas ambang batas", currentDate, false)
+                    val message = "Suhu berada diatas ambang batas"
+                    val notification = Notification(notificationID, message, currentDate, false)
+                    // DI KOMEN SOALNYA DI CREATE TEREUS NOTIFNYA
+                    notificationReference.child(notificationID).setValue(notification)
+                    sendNotification(message)
                 }
-                if (suhuValue < temperatureLowerLimit) {
+                if (suhuValue.toFloat() < temperatureLowerLimit.toFloat()) {
                     println("NOTIFIKASI 4")
-                    val notification = Notification(notificationID, "Suhu berada dibawah ambang batas", currentDate, false)
+                    val message = "Suhu berada dibawah ambang batas"
+                    val notification = Notification(notificationID, message, currentDate, false)
+                    // DI KOMEN SOALNYA DI CREATE TEREUS NOTIFNYA
+                    notificationReference.child(notificationID).setValue(notification)
+                    sendNotification(message)
                 }
-                if (phTanahValue > soilPhUpperLimit) {
+                if (phTanahValue.toFloat() > soilPhUpperLimit.toFloat()) {
                     println("NOTIFIKASI 5")
-                    val notification = Notification(notificationID, "pH Tanah berada diatas ambang batas", currentDate, false)
+                    val message = "pH Tanah berada diatas ambang batas"
+                    val notification = Notification(notificationID, message, currentDate, false)
+                    // DI KOMEN SOALNYA DI CREATE TEREUS NOTIFNYA
+                    notificationReference.child(notificationID).setValue(notification)
+                    sendNotification(message)
                 }
-                if (phTanahValue < soilPhLowerLimit) {
+                if (phTanahValue.toFloat() < soilPhLowerLimit.toFloat()) {
                     println("NOTIFIKASI 6")
-                    val notification = Notification(notificationID, "pH Tanah berada dibawah ambang batas", currentDate, false)
+                    val message = "pH Tanah berada dibawah ambang batas"
+                    val notification = Notification(notificationID, message, currentDate, false)
+                    // DI KOMEN SOALNYA DI CREATE TEREUS NOTIFNYA
+                    notificationReference.child(notificationID).setValue(notification)
+                    sendNotification(message)
                 }
                 when (pompa) {
                     true -> {
                         println("NOTIFIKASI 7")
-                        val notification = Notification(notificationID, "Pompa air sedang menyala pada tanggal ${currentDate}", currentDate, false)
+                        val message = "Pompa air sedang menyala pada tanggal ${currentDate}"
+                        val notification = Notification(notificationID, message, currentDate, false)
+                        // DI KOMEN SOALNYA DI CREATE TEREUS NOTIFNYA
+                        notificationReference.child(notificationID).setValue(notification)
+                        sendNotification(message)
                     }
                     false -> {
                         println("NOTIFIKASI 8")
-                        val notification = Notification(notificationID, "Pompa air sedang mati pada tanggal ${currentDate}", currentDate, false)
+                        val message = "Pompa air sedang mati pada tanggal ${currentDate}"
+                        val notification = Notification(notificationID, message, currentDate, false)
+                        // DI KOMEN SOALNYA DI CREATE TEREUS NOTIFNYA
+                        notificationReference.child(notificationID).setValue(notification)
+                        sendNotification(message)
                     }
                 }
                 when (kipas) {
                     true -> {
                         println("NOTIFIKASI 9")
-                        val notification = Notification(notificationID, "Kipas angin sedang menyala pada tanggal ${currentDate}", currentDate, false)
+                        val message = "Kipas angin sedang menyala pada tanggal ${currentDate}"
+                        val notification = Notification(notificationID, message, currentDate, false)
+                        // DI KOMEN SOALNYA DI CREATE TEREUS NOTIFNYA
+                        notificationReference.child(notificationID).setValue(notification)
+                        sendNotification(message)
                     }
                     false -> {
                         println("NOTIFIKASI 10")
-                        val notification = Notification(notificationID, "Kipas angin sedang mati pada tanggal ${currentDate}", currentDate, false)
+                        val message = "Kipas angin sedang mati pada tanggal ${currentDate}"
+                        val notification = Notification(notificationID, message, currentDate, false)
+                        // DI KOMEN SOALNYA DI CREATE TEREUS NOTIFNYA
+                        notificationReference.child(notificationID).setValue(notification)
+                        sendNotification(message)
                     }
                 }
                 when (penetralPh) {
                     true -> {
                         println("NOTIFIKASI 11")
-                        val notification = Notification(notificationID, "Penetral pH sedang menyala pada tanggal ${currentDate}", currentDate, false)
+                        val message = "Penetral pH sedang menyala pada tanggal ${currentDate}"
+                        val notification = Notification(notificationID, message, currentDate, false)
+                        // DI KOMEN SOALNYA DI CREATE TEREUS NOTIFNYA
+                        notificationReference.child(notificationID).setValue(notification)
+                        sendNotification(message)
                     }
                     false -> {
                         println("NOTIFIKASI 12")
-                        val notification = Notification(notificationID, "Penetral pH sedang mati pada tanggal ${currentDate}", currentDate, false)
+                        val message = "Penetral pH sedang mati pada tanggal ${currentDate}"
+                        val notification = Notification(notificationID, message, currentDate, false)
+                        // DI KOMEN SOALNYA DI CREATE TEREUS NOTIFNYA
+                        notificationReference.child(notificationID).setValue(notification)
+                        sendNotification(message)
                     }
                 }
 
@@ -175,6 +233,25 @@ class HomeFragment : Fragment() {
         val batasAtasPh = monitoringConfig.batasAtasPh
         val batasMinimalPh = monitoringConfig.batasMinimalPh
         val batasMaximalPh = monitoringConfig.batasMaximalPh
+    }
+
+    private fun sendNotification(message: String) {
+        val notificationManager = activity?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val builder = NotificationCompat.Builder(requireContext(), CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_notification)
+            .setContentTitle(resources.getString(R.string.title_notif))
+            .setContentText(message)
+            .setAutoCancel(true)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT)
+            channel.description = CHANNEL_NAME
+            builder.setChannelId(CHANNEL_ID)
+            notificationManager.createNotificationChannel(channel)
+        }
+
+        val notification = builder.build()
+        notificationManager.notify(NOTIFICATION_ID, notification)
     }
 }
 

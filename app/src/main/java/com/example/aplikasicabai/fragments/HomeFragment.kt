@@ -3,7 +3,9 @@ package com.example.aplikasicabai.fragments
 import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -14,6 +16,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.aplikasicabai.MainActivity
 import com.example.aplikasicabai.R
 import com.example.aplikasicabai.RecyclerAdapter
 import com.example.aplikasicabai.databinding.FragmentHomeBinding
@@ -93,14 +96,12 @@ class HomeFragment : Fragment() {
                 //    MonitoringConfig(soilMoistureLowerLimit, soilMoistureUpperLimit, temperatureLowerLimit, temperatureUpperLimit, soilPhLowerLimit, soilPhUpperLimit, soilPhMinimumLimit, soilPhMaximumLimit),
                 //    notificationId
                 //)
-                println("INI kelembapanValue $kelembapanValue")
-                println("INI soilMoistureUpperLimit $soilMoistureUpperLimit")
                 if (kelembapanValue.toFloat() > soilMoistureUpperLimit.toFloat()) {
                     println("NOTIFIKASI 1")
                     val message = "Kelembapan Tanah berada diatas ambang batas"
                     val notification = Notification(notificationID, message, currentDate, false)
                     // DI KOMEN SOALNYA DI CREATE TEREUS NOTIFNYA
-                    notificationReference.child(notificationID).setValue(notification)
+//                    notificationReference.child(notificationID).setValue(notification)
                     sendNotification(message)
 
                 }
@@ -109,31 +110,31 @@ class HomeFragment : Fragment() {
                     val message = "Kelembapan Tanah berada dibawah ambang batas"
                     val notification = Notification(notificationID, message, currentDate, false)
                     // DI KOMEN SOALNYA DI CREATE TEREUS NOTIFNYA
-                    notificationReference.child(notificationID).setValue(notification)
-                    sendNotification(message)
+//                    notificationReference.child(notificationID).setValue(notification)
+//                    sendNotification(message)
                 }
                 if (suhuValue.toFloat() > temperatureUpperLimit.toFloat()) {
                     println("NOTIFIKASI 3")
                     val message = "Suhu berada diatas ambang batas"
                     val notification = Notification(notificationID, message, currentDate, false)
                     // DI KOMEN SOALNYA DI CREATE TEREUS NOTIFNYA
-                    notificationReference.child(notificationID).setValue(notification)
-                    sendNotification(message)
+//                    notificationReference.child(notificationID).setValue(notification)
+//                    sendNotification(message)
                 }
                 if (suhuValue.toFloat() < temperatureLowerLimit.toFloat()) {
                     println("NOTIFIKASI 4")
                     val message = "Suhu berada dibawah ambang batas"
                     val notification = Notification(notificationID, message, currentDate, false)
                     // DI KOMEN SOALNYA DI CREATE TEREUS NOTIFNYA
-                    notificationReference.child(notificationID).setValue(notification)
-                    sendNotification(message)
+//                    notificationReference.child(notificationID).setValue(notification)
+//                    sendNotification(message)
                 }
                 if (phTanahValue.toFloat() > soilPhUpperLimit.toFloat()) {
                     println("NOTIFIKASI 5")
                     val message = "pH Tanah berada diatas ambang batas"
                     val notification = Notification(notificationID, message, currentDate, false)
                     // DI KOMEN SOALNYA DI CREATE TEREUS NOTIFNYA
-                    notificationReference.child(notificationID).setValue(notification)
+//                    notificationReference.child(notificationID).setValue(notification)
                     sendNotification(message)
                 }
                 if (phTanahValue.toFloat() < soilPhLowerLimit.toFloat()) {
@@ -141,8 +142,8 @@ class HomeFragment : Fragment() {
                     val message = "pH Tanah berada dibawah ambang batas"
                     val notification = Notification(notificationID, message, currentDate, false)
                     // DI KOMEN SOALNYA DI CREATE TEREUS NOTIFNYA
-                    notificationReference.child(notificationID).setValue(notification)
-                    sendNotification(message)
+//                    notificationReference.child(notificationID).setValue(notification)
+//                    sendNotification(message)
                 }
                 when (pompa) {
                     true -> {
@@ -150,16 +151,16 @@ class HomeFragment : Fragment() {
                         val message = "Pompa air sedang menyala pada tanggal ${currentDate}"
                         val notification = Notification(notificationID, message, currentDate, false)
                         // DI KOMEN SOALNYA DI CREATE TEREUS NOTIFNYA
-                        notificationReference.child(notificationID).setValue(notification)
-                        sendNotification(message)
+//                        notificationReference.child(notificationID).setValue(notification)
+//                        sendNotification(message)
                     }
                     false -> {
                         println("NOTIFIKASI 8")
                         val message = "Pompa air sedang mati pada tanggal ${currentDate}"
                         val notification = Notification(notificationID, message, currentDate, false)
                         // DI KOMEN SOALNYA DI CREATE TEREUS NOTIFNYA
-                        notificationReference.child(notificationID).setValue(notification)
-                        sendNotification(message)
+//                        notificationReference.child(notificationID).setValue(notification)
+//                        sendNotification(message)
                     }
                 }
                 when (kipas) {
@@ -168,16 +169,16 @@ class HomeFragment : Fragment() {
                         val message = "Kipas angin sedang menyala pada tanggal ${currentDate}"
                         val notification = Notification(notificationID, message, currentDate, false)
                         // DI KOMEN SOALNYA DI CREATE TEREUS NOTIFNYA
-                        notificationReference.child(notificationID).setValue(notification)
-                        sendNotification(message)
+//                        notificationReference.child(notificationID).setValue(notification)
+//                        sendNotification(message)
                     }
                     false -> {
                         println("NOTIFIKASI 10")
                         val message = "Kipas angin sedang mati pada tanggal ${currentDate}"
                         val notification = Notification(notificationID, message, currentDate, false)
                         // DI KOMEN SOALNYA DI CREATE TEREUS NOTIFNYA
-                        notificationReference.child(notificationID).setValue(notification)
-                        sendNotification(message)
+//                        notificationReference.child(notificationID).setValue(notification)
+//                        sendNotification(message)
                     }
                 }
                 when (penetralPh) {
@@ -186,16 +187,16 @@ class HomeFragment : Fragment() {
                         val message = "Penetral pH sedang menyala pada tanggal ${currentDate}"
                         val notification = Notification(notificationID, message, currentDate, false)
                         // DI KOMEN SOALNYA DI CREATE TEREUS NOTIFNYA
-                        notificationReference.child(notificationID).setValue(notification)
-                        sendNotification(message)
+//                        notificationReference.child(notificationID).setValue(notification)
+//                        sendNotification(message)
                     }
                     false -> {
                         println("NOTIFIKASI 12")
                         val message = "Penetral pH sedang mati pada tanggal ${currentDate}"
                         val notification = Notification(notificationID, message, currentDate, false)
                         // DI KOMEN SOALNYA DI CREATE TEREUS NOTIFNYA
-                        notificationReference.child(notificationID).setValue(notification)
-                        sendNotification(message)
+//                        notificationReference.child(notificationID).setValue(notification)
+//                        sendNotification(message)
                     }
                 }
 
@@ -210,7 +211,7 @@ class HomeFragment : Fragment() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
+                println("INI ERROR $error")
             }
 
         }
@@ -236,12 +237,21 @@ class HomeFragment : Fragment() {
     }
 
     private fun sendNotification(message: String) {
+        val intent = Intent(activity, MainActivity::class.java)
+        val pendingIntent = PendingIntent.getActivity(
+            activity,
+            0,
+            intent,
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) PendingIntent.FLAG_IMMUTABLE else 0
+        )
+
         val notificationManager = activity?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val builder = NotificationCompat.Builder(requireContext(), CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle(resources.getString(R.string.title_notif))
             .setContentText(message)
             .setAutoCancel(true)
+            .setContentIntent(pendingIntent)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT)

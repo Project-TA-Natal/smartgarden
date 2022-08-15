@@ -33,33 +33,33 @@ import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.*
+import kotlin.math.abs
 
 class HomeFragment : Fragment() {
 
-    private var _homeBinding: FragmentHomeBinding? = null
-    private val homeBinding get() = _homeBinding!!
+    private var homeBinding: FragmentHomeBinding? = null
     private var smartGardenDB: SmartGardenDatabase? = null
     companion object {
         private const val NOTIFICATION_ID = 1
         private const val CHANNEL_ID = "channel_01"
         private const val CHANNEL_NAME = "smart garden channel"
     }
+    // private val notificationRef = FirebaseDatabase.getInstance().getReference("notifications_kesel")
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        _homeBinding = FragmentHomeBinding.inflate(inflater, container,false)
+    ): View? {
+        homeBinding = FragmentHomeBinding.inflate(inflater, container,false)
         smartGardenDB = SmartGardenDatabase.getInstance(context?.applicationContext!!)
         getDataFirebase()
-        return homeBinding.root
+        return homeBinding?.root
     }
 
     private fun getDataFirebase() {
         val database = FirebaseDatabase.getInstance().reference
         // database.child("notifications").removeValue()
         val notificationReference = FirebaseDatabase.getInstance().getReference("notifications_kesel")
-        val notificationID = notificationReference.push().key!!
         val databaseListener = object : ValueEventListener {
             @SuppressLint("SimpleDateFormat")
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -101,7 +101,7 @@ class HomeFragment : Fragment() {
                 val objectMonitoring = Monitoring(1, kelembapanValue, suhuValue, phTanahValue, pompa as Boolean, kipas as Boolean, penetralPh as Boolean)
                 println("INI objectMonitoring $objectMonitoring")
 
-                GlobalScope.launch {
+                GlobalScope.async {
                     val monitoringRoomDB = smartGardenDB?.monitoringDao()?.getDetailMonitoring(1)
                     if (monitoringRoomDB == null) {
                         println("INI sampleData is NULL")
@@ -125,6 +125,7 @@ class HomeFragment : Fragment() {
                             if (kelembapanValue.toFloat() > soilMoistureUpperLimit.toFloat()) {
                                 println("NOTIFIKASI 1")
                                 val message = "Kelembapan Tanah ($kelembapanValue) berada diatas ambang batas"
+                                val notificationID = notificationReference.push().key!!
                                 val updateObjectMonitoring = Monitoring(id = 1, kelembapan = kelembapanValue, suhu = suhuValue, phTanah = phTanahValue, pompaAir =  pompa, kipasAngin = kipas, penetralPh = penetralPh)
                                 createNotificationToFirebase(notificationID, message, currentDate, false, updateObjectMonitoring)
                                 sendNotification(message)
@@ -133,6 +134,7 @@ class HomeFragment : Fragment() {
                             if (kelembapanValue.toFloat() < soilMoistureLowerLimit.toFloat()) {
                                 println("NOTIFIKASI 2")
                                 val message = "Kelembapan Tanah ($kelembapanValue) berada dibawah ambang batas"
+                                val notificationID = notificationReference.push().key!!
                                 val updateObjectMonitoring = Monitoring(id = 1, kelembapan = kelembapanValue, suhu = suhuValue, phTanah = phTanahValue, pompaAir =  pompa, kipasAngin = kipas, penetralPh = penetralPh)
                                 createNotificationToFirebase(notificationID, message, currentDate, false, updateObjectMonitoring)
                                 sendNotification(message)
@@ -142,6 +144,7 @@ class HomeFragment : Fragment() {
                             if (suhuValue.toFloat() > temperatureUpperLimit.toFloat()) {
                                 println("NOTIFIKASI 3")
                                 val message = "Suhu berada diatas ambang batas"
+                                val notificationID = notificationReference.push().key!!
                                 val updateObjectMonitoring = Monitoring(id = 1, kelembapan = kelembapanValue, suhu = suhuValue, phTanah = phTanahValue, pompaAir =  pompa, kipasAngin = kipas, penetralPh = penetralPh)
                                 createNotificationToFirebase(notificationID, message, currentDate, false, updateObjectMonitoring)
                                 sendNotification(message)
@@ -149,6 +152,7 @@ class HomeFragment : Fragment() {
                             if (suhuValue.toFloat() < temperatureLowerLimit.toFloat()) {
                                 println("NOTIFIKASI 4")
                                 val message = "Suhu berada dibawah ambang batas"
+                                val notificationID = notificationReference.push().key!!
                                 val updateObjectMonitoring = Monitoring(id = 1, kelembapan = kelembapanValue, suhu = suhuValue, phTanah = phTanahValue, pompaAir =  pompa, kipasAngin = kipas, penetralPh = penetralPh)
                                 createNotificationToFirebase(notificationID, message, currentDate, false, updateObjectMonitoring)
                                 sendNotification(message)
@@ -158,6 +162,7 @@ class HomeFragment : Fragment() {
                             if (phTanahValue.toFloat() > soilPhUpperLimit.toFloat()) {
                                 println("NOTIFIKASI 5")
                                 val message = "pH Tanah berada diatas ambang batas"
+                                val notificationID = notificationReference.push().key!!
                                 val updateObjectMonitoring = Monitoring(id = 1, kelembapan = kelembapanValue, suhu = suhuValue, phTanah = phTanahValue, pompaAir =  pompa, kipasAngin = kipas, penetralPh = penetralPh)
                                 createNotificationToFirebase(notificationID, message, currentDate, false, updateObjectMonitoring)
                                 sendNotification(message)
@@ -165,6 +170,7 @@ class HomeFragment : Fragment() {
                             if (phTanahValue.toFloat() < soilPhLowerLimit.toFloat()) {
                                 println("NOTIFIKASI 6")
                                 val message = "pH Tanah berada dibawah ambang batas"
+                                val notificationID = notificationReference.push().key!!
                                 val updateObjectMonitoring = Monitoring(id = 1, kelembapan = kelembapanValue, suhu = suhuValue, phTanah = phTanahValue, pompaAir =  pompa, kipasAngin = kipas, penetralPh = penetralPh)
                                 createNotificationToFirebase(notificationID, message, currentDate, false, updateObjectMonitoring)
                                 sendNotification(message)
@@ -175,6 +181,7 @@ class HomeFragment : Fragment() {
                                 true -> {
                                     println("NOTIFIKASI 7")
                                     val message = "Pompa air sedang menyala pada tanggal ${currentDate}"
+                                    val notificationID = notificationReference.push().key!!
                                     val updateObjectMonitoring = Monitoring(id = 1, kelembapan = kelembapanValue, suhu = suhuValue, phTanah = phTanahValue, pompaAir =  pompa, kipasAngin = kipas, penetralPh = penetralPh)
                                     createNotificationToFirebase(notificationID, message, currentDate, false, updateObjectMonitoring)
                                     sendNotification(message)
@@ -182,6 +189,7 @@ class HomeFragment : Fragment() {
                                 false -> {
                                     println("NOTIFIKASI 8")
                                     val message = "Pompa air sedang mati pada tanggal ${currentDate}"
+                                    val notificationID = notificationReference.push().key!!
                                     val updateObjectMonitoring = Monitoring(id = 1, kelembapan = kelembapanValue, suhu = suhuValue, phTanah = phTanahValue, pompaAir =  pompa, kipasAngin = kipas, penetralPh = penetralPh)
                                     createNotificationToFirebase(notificationID, message, currentDate, false, updateObjectMonitoring)
                                     sendNotification(message)
@@ -193,6 +201,7 @@ class HomeFragment : Fragment() {
                                 true -> {
                                     println("NOTIFIKASI 9")
                                     val message = "Kipas angin sedang menyala pada tanggal ${currentDate}"
+                                    val notificationID = notificationReference.push().key!!
                                     val updateObjectMonitoring = Monitoring(id = 1, kelembapan = kelembapanValue, suhu = suhuValue, phTanah = phTanahValue, pompaAir =  pompa, kipasAngin = kipas, penetralPh = penetralPh)
                                     createNotificationToFirebase(notificationID, message, currentDate, false, updateObjectMonitoring)
                                     sendNotification(message)
@@ -200,6 +209,7 @@ class HomeFragment : Fragment() {
                                 false -> {
                                     println("NOTIFIKASI 10")
                                     val message = "Kipas angin sedang mati pada tanggal ${currentDate}"
+                                    val notificationID = notificationReference.push().key!!
                                     val updateObjectMonitoring = Monitoring(id = 1, kelembapan = kelembapanValue, suhu = suhuValue, phTanah = phTanahValue, pompaAir =  pompa, kipasAngin = kipas, penetralPh = penetralPh)
                                     createNotificationToFirebase(notificationID, message, currentDate, false, updateObjectMonitoring)
                                     sendNotification(message)
@@ -211,6 +221,7 @@ class HomeFragment : Fragment() {
                                 true -> {
                                     println("NOTIFIKASI 11")
                                     val message = "Penetral pH sedang menyala pada tanggal ${currentDate}"
+                                    val notificationID = notificationReference.push().key!!
                                     val updateObjectMonitoring = Monitoring(id = 1, kelembapan = kelembapanValue, suhu = suhuValue, phTanah = phTanahValue, pompaAir =  pompa, kipasAngin = kipas, penetralPh = penetralPh)
                                     createNotificationToFirebase(notificationID, message, currentDate, false, updateObjectMonitoring)
                                     sendNotification(message)
@@ -218,6 +229,7 @@ class HomeFragment : Fragment() {
                                 false -> {
                                     println("NOTIFIKASI 12")
                                     val message = "Penetral pH sedang mati pada tanggal ${currentDate}"
+                                    val notificationID = notificationReference.push().key!!
                                     val updateObjectMonitoring = Monitoring(id = 1, kelembapan = kelembapanValue, suhu = suhuValue, phTanah = phTanahValue, pompaAir =  pompa, kipasAngin = kipas, penetralPh = penetralPh)
                                     createNotificationToFirebase(notificationID, message, currentDate, false, updateObjectMonitoring)
                                     sendNotification(message)
@@ -227,7 +239,7 @@ class HomeFragment : Fragment() {
                     }
                 }
 
-                homeBinding.apply {
+                homeBinding?.apply {
                     tvKelembapan.text = kelembapanValue
                     tvSuhu.text = suhuValue
                     tvPh.text = phTanahValue
@@ -274,24 +286,22 @@ class HomeFragment : Fragment() {
     }
 
     private fun createNotificationToFirebase(notificationID: String, message: String, currentDate: String, isRead: Boolean, updateObjectMonitoring: Monitoring) {
+        println("INI updateObjectMonitoring $updateObjectMonitoring")
         val notification = Notification(notificationID, message, currentDate, isRead)
         println("NOTIF ID $notificationID")
-        val notificationRef = FirebaseDatabase.getInstance().getReference("notifications_kesel")
-        notificationRef.child(notificationID).setValue(notification)
+         val notificationRef = FirebaseDatabase.getInstance().getReference("notifications_kesel")
+
 
         GlobalScope.launch {
+//            notificationRef.child(notificationID).setValue(notification)
             val resultUpdateMonitoring = smartGardenDB?.monitoringDao()?.updateMitoring(updateObjectMonitoring)
             if (resultUpdateMonitoring != 0) {
                 println("SUCCESSFULLY UPDATE MONITORING DB")
+                notificationRef.child(notificationID).setValue(notification)
             } else {
                 println("FAILED TO UPDATE MONITORING DB")
             }
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        _homeBinding = null
     }
 }
 

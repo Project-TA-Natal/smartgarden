@@ -40,11 +40,11 @@ android {
 dependencies {
 
     implementation 'androidx.core:core-ktx:1.8.0'
-    implementation 'androidx.appcompat:appcompat:1.4.2'
+    implementation 'androidx.appcompat:appcompat:1.5.0'
     implementation 'com.google.android.material:material:1.6.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'com.google.firebase:firebase-auth-ktx:21.0.6'
-    implementation 'com.google.firebase:firebase-messaging-ktx:23.0.6'
+    implementation 'com.google.firebase:firebase-auth-ktx:21.0.7'
+    implementation 'com.google.firebase:firebase-messaging-ktx:23.0.7'
     implementation 'com.google.firebase:firebase-database-ktx:20.0.5'
     implementation platform('com.google.firebase:firebase-bom:30.1.0')
     implementation 'com.google.firebase:firebase-analytics-ktx'
@@ -54,6 +54,8 @@ dependencies {
     implementation 'androidx.navigation:navigation-fragment-ktx:2.5.1'
     implementation 'androidx.navigation:navigation-ui-ktx:2.5.1'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.1'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.5.1'
     implementation 'androidx.room:room-runtime:2.4.3'
     implementation 'androidx.room:room-ktx:2.4.3'
     kapt 'androidx.room:room-compiler:2.4.3'

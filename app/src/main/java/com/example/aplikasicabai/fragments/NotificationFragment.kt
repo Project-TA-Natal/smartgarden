@@ -30,7 +30,7 @@ class NotificationFragment : Fragment() {
     }
 
     private fun getNotificationList() {
-        dbref = FirebaseDatabase.getInstance().getReference("notifications")
+        dbref = FirebaseDatabase.getInstance().getReference("notifications_kesel")
         val dbListener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {

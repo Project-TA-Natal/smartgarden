@@ -19,11 +19,16 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.aplikasicabai.MainActivity
 import com.example.aplikasicabai.R
 import com.example.aplikasicabai.RecyclerAdapter
+import com.example.aplikasicabai.database.SmartGardenDatabase
 import com.example.aplikasicabai.databinding.FragmentHomeBinding
 import com.example.aplikasicabai.model.Monitoring
 import com.example.aplikasicabai.model.MonitoringConfig
 import com.example.aplikasicabai.model.Notification
 import com.google.firebase.database.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -31,7 +36,9 @@ import java.util.*
 
 class HomeFragment : Fragment() {
 
-    private var homeBinding: FragmentHomeBinding? = null
+    private var _homeBinding: FragmentHomeBinding? = null
+    private val homeBinding get() = _homeBinding!!
+    private var smartGardenDB: SmartGardenDatabase? = null
     companion object {
         private const val NOTIFICATION_ID = 1
         private const val CHANNEL_ID = "channel_01"
@@ -41,16 +48,18 @@ class HomeFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        homeBinding = FragmentHomeBinding.inflate(inflater, container,false)
+    ): View {
+        _homeBinding = FragmentHomeBinding.inflate(inflater, container,false)
+        smartGardenDB = SmartGardenDatabase.getInstance(context?.applicationContext!!)
         getDataFirebase()
-        return homeBinding?.root
+        return homeBinding.root
     }
 
     private fun getDataFirebase() {
         val database = FirebaseDatabase.getInstance().reference
         // database.child("notifications").removeValue()
-        val notificationReference = FirebaseDatabase.getInstance().getReference("notifications")
+        val notificationReference = FirebaseDatabase.getInstance().getReference("notifications_kesel")
+        val notificationID = notificationReference.push().key!!
         val databaseListener = object : ValueEventListener {
             @SuppressLint("SimpleDateFormat")
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -86,121 +95,139 @@ class HomeFragment : Fragment() {
                 var soilPhUpperLimit = configurationValue.child("ba_ph").getValue().toString()
                 var soilPhLowerLimit = configurationValue.child("bb_ph").getValue().toString()
 
-
                 val sdf = SimpleDateFormat("dd MMMM yyyy hh:mm")
                 val currentDate = sdf.format(Date())
-                val notificationID = notificationReference.push().key!!
 
-                //createNotification(
-                //    Monitoring(kelembapanValue.toFloat(), suhuValue.toFloat(), phTanahValue.toFloat(), pompa as Boolean?, kipas as Boolean?, penetralPh as Boolean?),
-                //    MonitoringConfig(soilMoistureLowerLimit, soilMoistureUpperLimit, temperatureLowerLimit, temperatureUpperLimit, soilPhLowerLimit, soilPhUpperLimit, soilPhMinimumLimit, soilPhMaximumLimit),
-                //    notificationId
-                //)
-                if (kelembapanValue.toFloat() > soilMoistureUpperLimit.toFloat()) {
-                    println("NOTIFIKASI 1")
-                    val message = "Kelembapan Tanah berada diatas ambang batas"
-                    val notification = Notification(notificationID, message, currentDate, false)
-                    // DI KOMEN SOALNYA DI CREATE TEREUS NOTIFNYA
-//                    notificationReference.child(notificationID).setValue(notification)
-                    sendNotification(message)
+                val objectMonitoring = Monitoring(1, kelembapanValue, suhuValue, phTanahValue, pompa as Boolean, kipas as Boolean, penetralPh as Boolean)
+                println("INI objectMonitoring $objectMonitoring")
 
-                }
-                if (kelembapanValue.toFloat() < soilMoistureLowerLimit.toFloat()) {
-                    println("NOTIFIKASI 2")
-                    val message = "Kelembapan Tanah berada dibawah ambang batas"
-                    val notification = Notification(notificationID, message, currentDate, false)
-                    // DI KOMEN SOALNYA DI CREATE TEREUS NOTIFNYA
-//                    notificationReference.child(notificationID).setValue(notification)
-//                    sendNotification(message)
-                }
-                if (suhuValue.toFloat() > temperatureUpperLimit.toFloat()) {
-                    println("NOTIFIKASI 3")
-                    val message = "Suhu berada diatas ambang batas"
-                    val notification = Notification(notificationID, message, currentDate, false)
-                    // DI KOMEN SOALNYA DI CREATE TEREUS NOTIFNYA
-//                    notificationReference.child(notificationID).setValue(notification)
-//                    sendNotification(message)
-                }
-                if (suhuValue.toFloat() < temperatureLowerLimit.toFloat()) {
-                    println("NOTIFIKASI 4")
-                    val message = "Suhu berada dibawah ambang batas"
-                    val notification = Notification(notificationID, message, currentDate, false)
-                    // DI KOMEN SOALNYA DI CREATE TEREUS NOTIFNYA
-//                    notificationReference.child(notificationID).setValue(notification)
-//                    sendNotification(message)
-                }
-                if (phTanahValue.toFloat() > soilPhUpperLimit.toFloat()) {
-                    println("NOTIFIKASI 5")
-                    val message = "pH Tanah berada diatas ambang batas"
-                    val notification = Notification(notificationID, message, currentDate, false)
-                    // DI KOMEN SOALNYA DI CREATE TEREUS NOTIFNYA
-//                    notificationReference.child(notificationID).setValue(notification)
-                    sendNotification(message)
-                }
-                if (phTanahValue.toFloat() < soilPhLowerLimit.toFloat()) {
-                    println("NOTIFIKASI 6")
-                    val message = "pH Tanah berada dibawah ambang batas"
-                    val notification = Notification(notificationID, message, currentDate, false)
-                    // DI KOMEN SOALNYA DI CREATE TEREUS NOTIFNYA
-//                    notificationReference.child(notificationID).setValue(notification)
-//                    sendNotification(message)
-                }
-                when (pompa) {
-                    true -> {
-                        println("NOTIFIKASI 7")
-                        val message = "Pompa air sedang menyala pada tanggal ${currentDate}"
-                        val notification = Notification(notificationID, message, currentDate, false)
-                        // DI KOMEN SOALNYA DI CREATE TEREUS NOTIFNYA
-//                        notificationReference.child(notificationID).setValue(notification)
-//                        sendNotification(message)
+                GlobalScope.launch {
+                    val monitoringRoomDB = smartGardenDB?.monitoringDao()?.getDetailMonitoring(1)
+                    if (monitoringRoomDB == null) {
+                        println("INI sampleData is NULL")
+                        val resultMonitoring = smartGardenDB?.monitoringDao()?.createMonitoring(objectMonitoring)
+                        if (resultMonitoring != 0.toLong()) {
+                            println("SUKSES CREATE DATABASE")
+                        } else {
+                            println("GAGAL CREATE DATABASE")
+                        }
                     }
-                    false -> {
-                        println("NOTIFIKASI 8")
-                        val message = "Pompa air sedang mati pada tanggal ${currentDate}"
-                        val notification = Notification(notificationID, message, currentDate, false)
-                        // DI KOMEN SOALNYA DI CREATE TEREUS NOTIFNYA
-//                        notificationReference.child(notificationID).setValue(notification)
-//                        sendNotification(message)
-                    }
-                }
-                when (kipas) {
-                    true -> {
-                        println("NOTIFIKASI 9")
-                        val message = "Kipas angin sedang menyala pada tanggal ${currentDate}"
-                        val notification = Notification(notificationID, message, currentDate, false)
-                        // DI KOMEN SOALNYA DI CREATE TEREUS NOTIFNYA
-//                        notificationReference.child(notificationID).setValue(notification)
-//                        sendNotification(message)
-                    }
-                    false -> {
-                        println("NOTIFIKASI 10")
-                        val message = "Kipas angin sedang mati pada tanggal ${currentDate}"
-                        val notification = Notification(notificationID, message, currentDate, false)
-                        // DI KOMEN SOALNYA DI CREATE TEREUS NOTIFNYA
-//                        notificationReference.child(notificationID).setValue(notification)
-//                        sendNotification(message)
-                    }
-                }
-                when (penetralPh) {
-                    true -> {
-                        println("NOTIFIKASI 11")
-                        val message = "Penetral pH sedang menyala pada tanggal ${currentDate}"
-                        val notification = Notification(notificationID, message, currentDate, false)
-                        // DI KOMEN SOALNYA DI CREATE TEREUS NOTIFNYA
-//                        notificationReference.child(notificationID).setValue(notification)
-//                        sendNotification(message)
-                    }
-                    false -> {
-                        println("NOTIFIKASI 12")
-                        val message = "Penetral pH sedang mati pada tanggal ${currentDate}"
-                        val notification = Notification(notificationID, message, currentDate, false)
-                        // DI KOMEN SOALNYA DI CREATE TEREUS NOTIFNYA
-//                        notificationReference.child(notificationID).setValue(notification)
-//                        sendNotification(message)
+                    if (monitoringRoomDB != null) {
+                        println("INI sampleData $monitoringRoomDB")
+                        val kelembapanDB = monitoringRoomDB.kelembapan
+                        val suhuDB = monitoringRoomDB.suhu
+                        val phTanahDB = monitoringRoomDB.phTanah
+                        val pompaAirDB = monitoringRoomDB.pompaAir
+                        val kipasAnginDB = monitoringRoomDB.kipasAngin
+                        val penetralPhDB = monitoringRoomDB.penetralPh
+
+                        if (kelembapanDB.toFloat() != kelembapanValue.toFloat()) {
+                            if (kelembapanValue.toFloat() > soilMoistureUpperLimit.toFloat()) {
+                                println("NOTIFIKASI 1")
+                                val message = "Kelembapan Tanah ($kelembapanValue) berada diatas ambang batas"
+                                val updateObjectMonitoring = Monitoring(id = 1, kelembapan = kelembapanValue, suhu = suhuValue, phTanah = phTanahValue, pompaAir =  pompa, kipasAngin = kipas, penetralPh = penetralPh)
+                                createNotificationToFirebase(notificationID, message, currentDate, false, updateObjectMonitoring)
+                                sendNotification(message)
+
+                            }
+                            if (kelembapanValue.toFloat() < soilMoistureLowerLimit.toFloat()) {
+                                println("NOTIFIKASI 2")
+                                val message = "Kelembapan Tanah ($kelembapanValue) berada dibawah ambang batas"
+                                val updateObjectMonitoring = Monitoring(id = 1, kelembapan = kelembapanValue, suhu = suhuValue, phTanah = phTanahValue, pompaAir =  pompa, kipasAngin = kipas, penetralPh = penetralPh)
+                                createNotificationToFirebase(notificationID, message, currentDate, false, updateObjectMonitoring)
+                                sendNotification(message)
+                            }
+                        }
+                        if (suhuDB.toFloat() != suhuValue.toFloat()) {
+                            if (suhuValue.toFloat() > temperatureUpperLimit.toFloat()) {
+                                println("NOTIFIKASI 3")
+                                val message = "Suhu berada diatas ambang batas"
+                                val updateObjectMonitoring = Monitoring(id = 1, kelembapan = kelembapanValue, suhu = suhuValue, phTanah = phTanahValue, pompaAir =  pompa, kipasAngin = kipas, penetralPh = penetralPh)
+                                createNotificationToFirebase(notificationID, message, currentDate, false, updateObjectMonitoring)
+                                sendNotification(message)
+                            }
+                            if (suhuValue.toFloat() < temperatureLowerLimit.toFloat()) {
+                                println("NOTIFIKASI 4")
+                                val message = "Suhu berada dibawah ambang batas"
+                                val updateObjectMonitoring = Monitoring(id = 1, kelembapan = kelembapanValue, suhu = suhuValue, phTanah = phTanahValue, pompaAir =  pompa, kipasAngin = kipas, penetralPh = penetralPh)
+                                createNotificationToFirebase(notificationID, message, currentDate, false, updateObjectMonitoring)
+                                sendNotification(message)
+                            }
+                        }
+                        if (phTanahDB.toFloat() != phTanahValue.toFloat()) {
+                            if (phTanahValue.toFloat() > soilPhUpperLimit.toFloat()) {
+                                println("NOTIFIKASI 5")
+                                val message = "pH Tanah berada diatas ambang batas"
+                                val updateObjectMonitoring = Monitoring(id = 1, kelembapan = kelembapanValue, suhu = suhuValue, phTanah = phTanahValue, pompaAir =  pompa, kipasAngin = kipas, penetralPh = penetralPh)
+                                createNotificationToFirebase(notificationID, message, currentDate, false, updateObjectMonitoring)
+                                sendNotification(message)
+                            }
+                            if (phTanahValue.toFloat() < soilPhLowerLimit.toFloat()) {
+                                println("NOTIFIKASI 6")
+                                val message = "pH Tanah berada dibawah ambang batas"
+                                val updateObjectMonitoring = Monitoring(id = 1, kelembapan = kelembapanValue, suhu = suhuValue, phTanah = phTanahValue, pompaAir =  pompa, kipasAngin = kipas, penetralPh = penetralPh)
+                                createNotificationToFirebase(notificationID, message, currentDate, false, updateObjectMonitoring)
+                                sendNotification(message)
+                            }
+                        }
+                        if (pompaAirDB != pompa) {
+                            when (pompa) {
+                                true -> {
+                                    println("NOTIFIKASI 7")
+                                    val message = "Pompa air sedang menyala pada tanggal ${currentDate}"
+                                    val updateObjectMonitoring = Monitoring(id = 1, kelembapan = kelembapanValue, suhu = suhuValue, phTanah = phTanahValue, pompaAir =  pompa, kipasAngin = kipas, penetralPh = penetralPh)
+                                    createNotificationToFirebase(notificationID, message, currentDate, false, updateObjectMonitoring)
+                                    sendNotification(message)
+                                }
+                                false -> {
+                                    println("NOTIFIKASI 8")
+                                    val message = "Pompa air sedang mati pada tanggal ${currentDate}"
+                                    val updateObjectMonitoring = Monitoring(id = 1, kelembapan = kelembapanValue, suhu = suhuValue, phTanah = phTanahValue, pompaAir =  pompa, kipasAngin = kipas, penetralPh = penetralPh)
+                                    createNotificationToFirebase(notificationID, message, currentDate, false, updateObjectMonitoring)
+                                    sendNotification(message)
+                                }
+                            }
+                        }
+                        if (kipasAnginDB != kipas) {
+                            when (kipas) {
+                                true -> {
+                                    println("NOTIFIKASI 9")
+                                    val message = "Kipas angin sedang menyala pada tanggal ${currentDate}"
+                                    val updateObjectMonitoring = Monitoring(id = 1, kelembapan = kelembapanValue, suhu = suhuValue, phTanah = phTanahValue, pompaAir =  pompa, kipasAngin = kipas, penetralPh = penetralPh)
+                                    createNotificationToFirebase(notificationID, message, currentDate, false, updateObjectMonitoring)
+                                    sendNotification(message)
+                                }
+                                false -> {
+                                    println("NOTIFIKASI 10")
+                                    val message = "Kipas angin sedang mati pada tanggal ${currentDate}"
+                                    val updateObjectMonitoring = Monitoring(id = 1, kelembapan = kelembapanValue, suhu = suhuValue, phTanah = phTanahValue, pompaAir =  pompa, kipasAngin = kipas, penetralPh = penetralPh)
+                                    createNotificationToFirebase(notificationID, message, currentDate, false, updateObjectMonitoring)
+                                    sendNotification(message)
+                                }
+                            }
+                        }
+                        if (penetralPhDB != penetralPh) {
+                            when (penetralPh) {
+                                true -> {
+                                    println("NOTIFIKASI 11")
+                                    val message = "Penetral pH sedang menyala pada tanggal ${currentDate}"
+                                    val updateObjectMonitoring = Monitoring(id = 1, kelembapan = kelembapanValue, suhu = suhuValue, phTanah = phTanahValue, pompaAir =  pompa, kipasAngin = kipas, penetralPh = penetralPh)
+                                    createNotificationToFirebase(notificationID, message, currentDate, false, updateObjectMonitoring)
+                                    sendNotification(message)
+                                }
+                                false -> {
+                                    println("NOTIFIKASI 12")
+                                    val message = "Penetral pH sedang mati pada tanggal ${currentDate}"
+                                    val updateObjectMonitoring = Monitoring(id = 1, kelembapan = kelembapanValue, suhu = suhuValue, phTanah = phTanahValue, pompaAir =  pompa, kipasAngin = kipas, penetralPh = penetralPh)
+                                    createNotificationToFirebase(notificationID, message, currentDate, false, updateObjectMonitoring)
+                                    sendNotification(message)
+                                }
+                            }
+                        }
                     }
                 }
 
-                homeBinding?.apply {
+                homeBinding.apply {
                     tvKelembapan.text = kelembapanValue
                     tvSuhu.text = suhuValue
                     tvPh.text = phTanahValue
@@ -216,24 +243,6 @@ class HomeFragment : Fragment() {
 
         }
         database.addValueEventListener(databaseListener)
-    }
-
-    private fun createNotification(monitoring: Monitoring, monitoringConfig: MonitoringConfig, notificationID: String) {
-        val kelembapanValue = monitoring.kelembapan
-        val suhuValue = monitoring.suhu
-        val phTanahValue = monitoring.phTanah
-        val pompaAirValue = monitoring.pompaAir
-        val kipasAnginValue = monitoring.kipasAngin
-        val penetralPhValue = monitoring.penetralPh
-
-        val batasBawahKelembapan = monitoringConfig.batasBawahKelembapan
-        val batasAtasKelembapan = monitoringConfig.batasAtasKelembapan
-        val batasBawahSuhu = monitoringConfig.batasBawahSuhu
-        val batasAtasSuhu = monitoringConfig.batasAtasSuhu
-        val batasBawahPh = monitoringConfig.batasBawahPh
-        val batasAtasPh = monitoringConfig.batasAtasPh
-        val batasMinimalPh = monitoringConfig.batasMinimalPh
-        val batasMaximalPh = monitoringConfig.batasMaximalPh
     }
 
     private fun sendNotification(message: String) {
@@ -262,6 +271,27 @@ class HomeFragment : Fragment() {
 
         val notification = builder.build()
         notificationManager.notify(NOTIFICATION_ID, notification)
+    }
+
+    private fun createNotificationToFirebase(notificationID: String, message: String, currentDate: String, isRead: Boolean, updateObjectMonitoring: Monitoring) {
+        val notification = Notification(notificationID, message, currentDate, isRead)
+        println("NOTIF ID $notificationID")
+        val notificationRef = FirebaseDatabase.getInstance().getReference("notifications_kesel")
+        notificationRef.child(notificationID).setValue(notification)
+
+        GlobalScope.launch {
+            val resultUpdateMonitoring = smartGardenDB?.monitoringDao()?.updateMitoring(updateObjectMonitoring)
+            if (resultUpdateMonitoring != 0) {
+                println("SUCCESSFULLY UPDATE MONITORING DB")
+            } else {
+                println("FAILED TO UPDATE MONITORING DB")
+            }
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _homeBinding = null
     }
 }
 

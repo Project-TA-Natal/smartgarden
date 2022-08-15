@@ -20,7 +20,9 @@ abstract class SmartGardenDatabase: RoomDatabase() {
         fun getInstance(context: Context): SmartGardenDatabase? {
             if (INSTANCE == null) {
                 synchronized(SmartGardenDatabase::class) {
-                    INSTANCE = Room.databaseBuilder(context.applicationContext, SmartGardenDatabase::class.java, "SmartGarden.db").build()
+                    INSTANCE = Room.databaseBuilder(context.applicationContext,
+                        SmartGardenDatabase::class.java, "SmartGarden")
+                        .build()
                 }
             }
             return  INSTANCE

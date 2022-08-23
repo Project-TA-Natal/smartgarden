@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -17,19 +18,28 @@ import com.example.aplikasicabai.R
 import com.example.aplikasicabai.SplashscreenActivity
 import com.example.aplikasicabai.databinding.FragmentStatisticBinding
 import com.example.aplikasicabai.formatter.AxisDateFormatter
+import com.example.aplikasicabai.model.History
 import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
+import com.github.mikephil.charting.formatter.ValueFormatter
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.*
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 class StatisticFragment : Fragment() {
 
     private var _statisticBinding: FragmentStatisticBinding? = null
     private val statisticBinding get() = _statisticBinding!!
+    private lateinit var dbRef : DatabaseReference
+    private var lineDataset = LineDataSet(null, null)
+    private var timeListFormatted: ValueFormatter ?= null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -39,39 +49,8 @@ class StatisticFragment : Fragment() {
         _statisticBinding = FragmentStatisticBinding.inflate(inflater, container,false)
         val sharedPreferences: SharedPreferences? = activity?.getSharedPreferences("user", Context.MODE_PRIVATE)
 
-        val sampleData = ArrayList<Entry>()
-        sampleData.add(Entry(0F, 20F))
-        sampleData.add(Entry(1F, 25F))
-        sampleData.add(Entry(2F, 30F))
-        sampleData.add(Entry(3F, 21F))
-        sampleData.add(Entry(4F, 24F))
-        sampleData.add(Entry(5F, 18F))
-        sampleData.add(Entry(6F, 20F))
-        sampleData.add(Entry(7F, 21F))
-        sampleData.add(Entry(8F, 25F))
-        sampleData.add(Entry(9F, 28F))
-
-        val sampleDate = ArrayList<String>()
-        sampleDate.add("01-Aug")
-        sampleDate.add("02-Aug")
-        sampleDate.add("03-Aug")
-        sampleDate.add("04-Aug")
-        sampleDate.add("05-Aug")
-        sampleDate.add("06-Aug")
-        sampleDate.add("07-Aug")
-        sampleDate.add("08-Aug")
-        sampleDate.add("09-Aug")
-        sampleDate.add("10-Aug")
-
-        val date = AxisDateFormatter(sampleDate.toArray(arrayOfNulls(sampleDate.size)))
-
-        val sampleLineDataSet = LineDataSet(sampleData, "Sample Kelembapan")
-        sampleLineDataSet.mode = LineDataSet.Mode.CUBIC_BEZIER
-        sampleLineDataSet.color = Color.BLUE
-        sampleLineDataSet.circleRadius = 5f
-        sampleLineDataSet.setCircleColor(Color.BLUE)
-
         val legend = statisticBinding.lineChart.legend
+        statisticBinding.lineChart.setNoDataText("Tidak ada data yang tersedia")
         legend.isEnabled = true
         legend.verticalAlignment = Legend.LegendVerticalAlignment.TOP
         legend.horizontalAlignment = Legend.LegendHorizontalAlignment.CENTER
@@ -109,15 +88,32 @@ class StatisticFragment : Fragment() {
                     .build()
                 dateRangePicker.show(this@StatisticFragment.requireActivity().supportFragmentManager, "MATERIAL_DATE_PICKER")
                 dateRangePicker.addOnPositiveButtonClickListener {
-                    statisticBinding.edDatePicker.setText(dateRangePicker.headerText)
+                    val first: Calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+                    val second: Calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+                    first.timeInMillis = it.first
+                    second.timeInMillis = it.second
+                    val format = SimpleDateFormat("dd/MM/yyyy")
+                    val startDate = format.format(first.time)
+                    val endDate = format.format(second.time)
+                    val showDate = "$startDate-$endDate"
+                    statisticBinding.edDatePicker.setText(showDate)
                 }
             }
-
-            lineChart.description.isEnabled = true
-            lineChart.xAxis.position = XAxis.XAxisPosition.BOTTOM
-            lineChart.data = LineData(sampleLineDataSet)
-            lineChart.animateXY(100, 500)
-            lineChart.xAxis?.valueFormatter = date
+            btnSearchStats.setOnClickListener {
+                val dateRange = edDatePicker.text.toString()
+                if (dateRange == "") {
+                    Toast.makeText(context, "Pilih Tanggal terlebih dahulu", Toast.LENGTH_SHORT).show()
+                } else {
+                    val configType = tvAutocomplete.text.toString()
+                    val dateRangeSplit = dateRange.split("-")
+                    val startAt = dateRangeSplit[0]
+                    val endAt = dateRangeSplit[1]
+                    println("INI START DATE $startAt")
+                    println("INI END DATE $endAt")
+                    println("INI KATEGORI TYPE $configType")
+                    getHistoryData(startAt, endAt, configType)
+                }
+            }
         }
 
         return statisticBinding.root
@@ -127,12 +123,89 @@ class StatisticFragment : Fragment() {
         super.onResume()
         val labelStats = resources.getStringArray(R.array.lable_stats)
         val arrayAdapter = ArrayAdapter(requireContext(), R.layout.item_dropdown, labelStats)
-        statisticBinding.tvAutocomplete.setAdapter(arrayAdapter)
+        // statisticBinding.tvAutocomplete.setAdapter(arrayAdapter)
+        statisticBinding.apply {
+            tvAutocomplete.setAdapter(arrayAdapter)
+        }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _statisticBinding = null
+    }
+
+    private fun getHistoryData(start_at: String, end_at: String, config_type: String) {
+        dbRef = FirebaseDatabase.getInstance().getReference("histori_data")
+        val dbListener = object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val kelembapanData = ArrayList<Entry>()
+                val suhuData = ArrayList<Entry>()
+                val phTanahData = ArrayList<Entry>()
+                val dataWaktu = ArrayList<String>()
+                if (snapshot.hasChildren()) {
+                    var entryIndex = 0;
+                    for (historySnapshot in snapshot.children) {
+                        val waktu = historySnapshot.child("Time").value.toString()
+                        var suhu = historySnapshot.child("Suhu_Udara").value
+                        if (suhu == null) suhu = 0
+                        suhu = "${suhu}f"
+                        var kelembapan = historySnapshot.child("Kelembapan_tanah").value
+                        if (kelembapan == null) kelembapan = 0
+                        kelembapan = "${kelembapan}f"
+                        var phTanah = historySnapshot.child("Ph_Tanah").value
+                        if (phTanah == null) phTanah = 0
+                        phTanah = "${phTanah}f"
+                        val historyData = History(kelembapan, phTanah, suhu, waktu)
+                        val kelembapanToFloat = historyData.kelembapan?.toFloat()
+                        val suhuToFloat = historyData.suhu?.toFloat()
+                        val phTanahToFloat = historyData.phTanah?.toFloat()
+                        val entryIndexToFloat = "${entryIndex}f".toFloat()
+                        kelembapanData.add(Entry(entryIndexToFloat, kelembapanToFloat as Float))
+                        suhuData.add(Entry(entryIndexToFloat, suhuToFloat as Float))
+                        phTanahData.add(Entry(entryIndexToFloat, phTanahToFloat as Float))
+                        dataWaktu.add(historyData.waktu as String)
+                        entryIndex += 1
+                        if (config_type == "Kelembaban Tanah") {
+                            showLineChart(kelembapanData, dataWaktu, config_type)
+                            Log.d("INI kelembapanData", "$kelembapanData")
+                        }
+                        if (config_type == "Suhu Ruang") {
+                            showLineChart(suhuData, dataWaktu, config_type)
+                        }
+                        if (config_type == "pH Tanah") {
+                            showLineChart(phTanahData, dataWaktu, config_type)
+                        }
+                    }
+                } else {
+                    statisticBinding.lineChart.apply {
+                        clear()
+                        invalidate()
+                    }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+
+        }
+        dbRef.addValueEventListener(dbListener)
+    }
+
+    private fun showLineChart(entry_list: ArrayList<Entry>, time_list: ArrayList<String>, config_type: String) {
+        timeListFormatted = AxisDateFormatter(time_list.toArray(arrayOfNulls(time_list.size)))
+        lineDataset = LineDataSet(entry_list, config_type)
+        lineDataset.mode = LineDataSet.Mode.CUBIC_BEZIER
+        lineDataset.color = Color.BLUE
+        lineDataset.circleRadius = 5f
+        lineDataset.setCircleColor(Color.BLUE)
+        statisticBinding.apply {
+            lineChart.description.isEnabled = true
+            lineChart.xAxis.position = XAxis.XAxisPosition.BOTTOM
+            lineChart.data = LineData(lineDataset)
+            lineChart.animateXY(100, 500)
+            lineChart.xAxis?.valueFormatter = timeListFormatted
+        }
     }
 }
 

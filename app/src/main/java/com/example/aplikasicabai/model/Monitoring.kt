@@ -23,11 +23,11 @@ data class Monitoring(
     var phTanah: String,
 
     @ColumnInfo(name = "pompa_air")
-    var pompaAir: Boolean,
+    var pompaAir: String,
 
     @ColumnInfo(name = "kipas_angin")
-    var kipasAngin: Boolean,
+    var kipasAngin: String,
 
     @ColumnInfo(name = "penetral_ph")
-    var penetralPh: Boolean
+    var penetralPh: String
 ) : Parcelable

@@ -165,6 +165,10 @@ class StatisticFragment : Fragment() {
                         phTanahData.add(Entry(entryIndexToFloat, phTanahToFloat as Float))
                         dataWaktu.add(historyData.waktu as String)
                         entryIndex += 1
+                        Log.d("INI SIZE DATA WAKTU", "${dataWaktu.size}")
+                        Log.d("INI SIZE DATA KELBPN", "${kelembapanData.size}")
+                        Log.d("INI SIZE DATA PHTANAH", "${phTanahData.size}")
+                        Log.d("INI SIZE DATA SUHU", "${suhuData.size}")
                         if (config_type == "Kelembaban Tanah") {
                             showLineChart(kelembapanData, dataWaktu, config_type)
                             Log.d("INI kelembapanData", "$kelembapanData")
@@ -197,7 +201,8 @@ class StatisticFragment : Fragment() {
         lineDataset = LineDataSet(entry_list, config_type)
         lineDataset.mode = LineDataSet.Mode.CUBIC_BEZIER
         lineDataset.color = Color.BLUE
-        lineDataset.circleRadius = 5f
+        lineDataset.circleRadius = 4f
+        lineDataset.lineWidth = 2f
         lineDataset.setCircleColor(Color.BLUE)
         statisticBinding.apply {
             lineChart.description.isEnabled = true
